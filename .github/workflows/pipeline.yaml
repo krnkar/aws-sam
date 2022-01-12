@@ -228,6 +228,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: [build-and-package]
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -255,7 +256,8 @@ jobs:
             --region ${DEV_REGION} \
             --s3-bucket ${DEV_ARTIFACTS_BUCKET} \
             --no-fail-on-empty-changeset \
-            --role-arn ${DEV_CLOUDFORMATION_EXECUTION_ROLE}
+            --role-arn ${DEV_CLOUDFORMATION_EXECUTION_ROLE} \
+            --no-confirm-changeset
 
   dev-test:
     if: github.ref == 'refs/heads/main'
@@ -270,6 +272,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: [dev-test]
     runs-on: ubuntu-latest
+    environment: st
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -297,7 +300,8 @@ jobs:
             --region ${ST_REGION} \
             --s3-bucket ${ST_ARTIFACTS_BUCKET} \
             --no-fail-on-empty-changeset \
-            --role-arn ${ST_CLOUDFORMATION_EXECUTION_ROLE}
+            --role-arn ${ST_CLOUDFORMATION_EXECUTION_ROLE} \
+            --no-confirm-changeset
 
   system-test:
     if: github.ref == 'refs/heads/main'
@@ -312,6 +316,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: [system-test]
     runs-on: ubuntu-latest
+    environment: ut
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -339,7 +344,8 @@ jobs:
             --region ${UT_REGION} \
             --s3-bucket ${UT_ARTIFACTS_BUCKET} \
             --no-fail-on-empty-changeset \
-            --role-arn ${UT_CLOUDFORMATION_EXECUTION_ROLE}
+            --role-arn ${UT_CLOUDFORMATION_EXECUTION_ROLE} \
+            --no-confirm-changeset
 
   integration-test:
     if: github.ref == 'refs/heads/main'
@@ -354,6 +360,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: [integration-test]
     runs-on: ubuntu-latest
+    environment: prod
     # Configure GitHub Action Environment to have a manual approval step before deployment to production
     # https://docs.github.com/en/actions/reference/environments
     # environment: <configured-environment>
@@ -384,4 +391,5 @@ jobs:
             --region ${PROD_REGION} \
             --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
             --no-fail-on-empty-changeset \
-            --role-arn ${PROD_CLOUDFORMATION_EXECUTION_ROLE}
+            --role-arn ${PROD_CLOUDFORMATION_EXECUTION_ROLE} \
+            --no-confirm-changeset
